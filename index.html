@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Видеоплеер с Vimeo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        #video-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        #player-container {
+            position: relative;
+        }
+        #vimeo-player {
+            width: 100%; /* Плеер занимает 100% ширины контейнера */
+            height: 500px;
+            border: none;
+        }
+        #video-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+        }
+        .video-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .video-description {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #framework-button {
+            display: none; /* Кнопка скрыта по умолчанию */
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+        }
+        #framework-button:hover {
+            background-color: #45a049;
+        }
+        /* Блок рекомендаций */
+        #recommendations {
+            margin-top: 30px;
+        }
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .recommendation-item:hover {
+            background-color: #d8d8d8;
+        }
+        .recommendation-thumbnail {
+            width: 100px;
+            height: 60px;
+            margin-right: 20px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .recommendation-content {
+            flex-grow: 1;
+        }
+        .recommendation-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .recommendation-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="video-section">
+    <!-- Контейнер для плеера и кнопки -->
+    <div id="player-container">
+        <!-- Плеер -->
+        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1009457101" allow="autoplay; fullscreen" allowfullscreen></iframe>
+
+        <!-- Кнопка для скачивания фреймворка, которая появится вместо плеера -->
+        <button id="framework-button" onclick="openFramework()">Скачать фреймворк</button>
+    </div>
+
+    <!-- Информация о текущем видео -->
+    <div id="video-info">
+        <p class="video-title">Фреймворки для роста бизнеса</p>
+        <p class="video-description">Что нужно, чтобы бизнес рос, и какие фреймворки для этого используются в методологии трекинга</p>
+    </div>
+
+    <!-- Блок с рекомендациями -->
+    <div id="recommendations">
+        <h2>Рекомендованные видео</h2>
+        <div class="recommendation-item" onclick="loadVideo(0)">
+            <img src="https://vumbnail.com/1009457101.jpg" alt="thumbnail" class="recommendation-thumbnail">
+            <div class="recommendation-content">
+                <p class="recommendation-title">Фреймворки для роста бизнеса</p>
+                <p class="recommendation-description">Что нужно, чтобы бизнес рос, и какие фреймворки для этого используются в методологии трекинга</p>
+            </div>
+        </div>
+        <div class="recommendation-item" onclick="loadVideo(1)">
+            <img src="https://vumbnail.com/1009457022.jpg" alt="thumbnail" class="recommendation-thumbnail">
+            <div class="recommendation-content">
+                <p class="recommendation-title">Как найти главное ограничение</p>
+                <p class="recommendation-description">Как выглядит процесс поиска и преодоления ограничений в реальных бизнесах</p>
+            </div>
+        </div>
+        <div class="recommendation-item" onclick="loadVideo(2)">
+            <img src="https://vumbnail.com/1009457072.jpg" alt="thumbnail" class="recommendation-thumbnail">
+            <div class="recommendation-content">
+                <p class="recommendation-title">4 способа поиска главного ограничения</p>
+                <p class="recommendation-description">4 главных способа найти главное ограничение на пути к большим целям</p>
+            </div>
+        </div>
+        <div class="recommendation-item" onclick="loadVideo(3)">
+            <img src="https://vumbnail.com/1009457053.jpg" alt="thumbnail" class="recommendation-thumbnail">
+            <div class="recommendation-content">
+                <p class="recommendation-title">Как устроены продажи</p>
+                <p class="recommendation-description">Как построить процесс, который приносит клиенту много ценности, а бизнесу - много прибыли</p>
+            </div>
+        </div>
+        <div class="recommendation-item" onclick="loadVideo(4)">
+            <img src="https://vumbnail.com/1009457105.jpg" alt="thumbnail" class="recommendation-thumbnail">
+            <div class="recommendation-content">
+                <p class="recommendation-title">Диагностика бизнеса</p>
+                <p class="recommendation-description">Диагностическая сессия и процесс трекинга, что такое стратегия, и как удерживать ответственность на стороне клиента</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+    // Список видео
+    const videos = [
+        { videoId: '1009457101', title: 'Фреймворки для роста бизнеса', description: 'Что нужно, чтобы бизнес рос, и какие фреймворки для этого используются в методологии трекинга' },
+        { videoId: '1009457022', title: 'Как найти главное ограничение', description: 'Как выглядит процесс поиска и преодоления ограничений в реальных бизнесах' },
+        { videoId: '1009457072', title: '4 способа поиска главного ограничения', description: '4 главных способа найти главное ограничение на пути к большим целям' },
+        { videoId: '1009457053', title: 'Как устроены продажи', description: 'Как построить процесс, который приносит клиенту много ценности, а бизнесу - много прибыли' },
+        { videoId: '1009457105', title: 'Диагностика бизнеса', description: 'Диагностическая сессия и процесс трекинга, что такое стратегия, и как удерживать ответственность на стороне клиента' }
+    ];
+
+    let currentVideoIndex = 0;
+    let player = new Vimeo.Player('vimeo-player', { id: videos[currentVideoIndex].videoId });
+
+    // Загрузка видео по индексу
+    function loadVideo(index) {
+        currentVideoIndex = index;
+        player.loadVideo(videos[currentVideoIndex].videoId).then(function() {
+            updateVideoInfo();
+            document.getElementById('vimeo-player').style.display = 'block'; // Показываем плеер
+            document.getElementById('framework-button').style.display = 'none'; // Скрываем кнопку
+        });
+    }
+
+    // Обновление информации о видео
+    function updateVideoInfo() {
+        document.querySelector('.video-title').textContent = videos[currentVideoIndex].title;
+        document.querySelector('.video-description').textContent = videos[currentVideoIndex].description;
+    }
+
+    // Открытие фреймворка в новом окне
+    function openFramework() {
+        window.open('https://docs.google.com/spreadsheets/d/1eaRQrbqokvZTVCn0fkuMPeAZPEzyBIcX/edit?usp=sharing&ouid=112452900066207805999&rtpof=true&sd=true', '_blank');
+    }
+
+    // Переход к следующему видео или показ кнопки после последнего видео
+    player.on('ended', function() {
+        if (currentVideoIndex < videos.length - 1) {
+            // Переход на следующее видео
+            loadVideo(currentVideoIndex + 1);
+        } else {
+            // Если закончилось последнее видео, скрываем плеер и показываем кнопку "Скачать фреймворк"
+            document.getElementById('vimeo-player').style.display = 'none';
+            document.getElementById('framework-button').style.display = 'block'; // Показываем кнопку
+        }
+    });
+</script>
+
+</body>
+</html>
